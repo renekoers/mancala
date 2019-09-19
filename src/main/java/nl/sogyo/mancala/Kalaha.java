@@ -7,8 +7,12 @@ public class Kalaha extends AbstractBowl {
 		this.beads = 0;
 	}
 	
-	public void setOwner(Player player) {
-		owner = player;
+	
+	public int takeBead(int beadsInHand) {
+		if (owner.getMyTurn() == true) {
+			beads += 1;
+			beadsInHand -= 1;
+		}
+		return beadsInHand;
 	}
-
 }

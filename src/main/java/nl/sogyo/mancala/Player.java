@@ -4,7 +4,7 @@ public class Player {
 	private Player opponent;
 	private boolean myTurn;
 	
-	
+	// Constructor	
 	private Player(boolean myTurn) {
 		this.opponent = null;
 		this.myTurn = myTurn;
@@ -22,6 +22,7 @@ public class Player {
 	}
 	
 	
+	// Getters
 	public boolean getMyTurn() {
 		return myTurn;
 	}
@@ -37,11 +38,7 @@ public class Player {
 	}
 	
 	
-	public boolean getPlayerTurn() {
-		return myTurn;
-	}
-	
-	
+	// Methods to switch turn with opponent
 	private void nextTurn() {
 		myTurn = !myTurn;
 	}

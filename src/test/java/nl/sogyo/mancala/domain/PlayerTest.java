@@ -28,8 +28,8 @@ public class PlayerTest {
 		Player player1 = playerList[0];
 		Player player2 = playerList[1];
 		
-		assertEquals("Player 1 should have the first, starting turn." , player1.getPlayerTurn(), true);
-		assertEquals("Player 2 should not have the starting turn." ,player2.getPlayerTurn(), false);
+		assertEquals("Player 1 should have the first, starting turn." , player1.getMyTurn(), true);
+		assertEquals("Player 2 should not have the starting turn." ,player2.getMyTurn(), false);
 	}
 	
 	
@@ -43,8 +43,8 @@ public class PlayerTest {
 		bowl.orderPlayerChange();
 
 		
-		assertEquals("Player 1 should be not have his turn again.", player1.getPlayerTurn(), false);
-		assertEquals("Player 2 should be now have his turn.", player2.getPlayerTurn(), true);
+		assertEquals("Player 1 should be not have his turn again.", player1.getMyTurn(), false);
+		assertEquals("Player 2 should be now have his turn.", player2.getMyTurn(), true);
 	}
 	
 	
@@ -57,7 +57,7 @@ public class PlayerTest {
 		kalaha.setOwner(player1);
 		
 		
-		assertEquals("Player 1 should have another turn.", player1.getPlayerTurn(), true);
-		assertEquals("Player 2 should not have the turn", player2.getPlayerTurn(), false);
+		assertEquals("Player 1 should have another turn.", player1.getMyTurn(), true);
+		assertEquals("Player 2 should not have the turn", player2.getMyTurn(), false);
 	}
 }
