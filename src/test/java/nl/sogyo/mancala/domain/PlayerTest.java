@@ -5,17 +5,15 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import nl.sogyo.mancala.Bowl;
-import nl.sogyo.mancala.Kalaha;
 import nl.sogyo.mancala.Player;
 
 public class PlayerTest {
 	
 
 	@Test
-	public void opponentTest() {
-		Player[] playerList = Player.makePlayers();
-		Player player1 = playerList[0];
-		Player player2 = playerList[1];
+	public void makePlayerPairTest() {
+		final Player player1 = new Player();
+		final Player player2 = player1.getOpponent();
 		
 		assertEquals("Player 1 should have player 2 as its opponent.", player1, player2.getOpponent());
 		assertEquals("Player 2 should have player 1 as its opponent.", player2, player1.getOpponent());
@@ -24,9 +22,8 @@ public class PlayerTest {
 	
 	@Test
 	public void startingPlayerTest() {
-		Player[] playerList = Player.makePlayers();
-		Player player1 = playerList[0];
-		Player player2 = playerList[1];
+		final Player player1 = new Player();
+		final Player player2 = player1.getOpponent();
 		
 		assertEquals("Player 1 should have the first, starting turn." , player1.getMyTurn(), true);
 		assertEquals("Player 2 should not have the starting turn." ,player2.getMyTurn(), false);
@@ -35,9 +32,8 @@ public class PlayerTest {
 	
 	@Test
 	public void playerTurnIfBowl() {
-		Player[] playerList = Player.makePlayers();
-		Player player1 = playerList[0];
-		Player player2 = playerList[1];
+		final Player player1 = new Player();
+		final Player player2 = player1.getOpponent();
 		Bowl bowl = new Bowl();
 		bowl.setOwner(player1);
 		bowl.orderPlayerChange();
@@ -47,17 +43,15 @@ public class PlayerTest {
 		assertEquals("Player 2 should be now have his turn.", player2.getMyTurn(), true);
 	}
 	
-	
-	@Test
-	public void playerTurnIfKalaha() {
-		Player[] playerList = Player.makePlayers();
-		Player player1 = playerList[0];
-		Player player2 = playerList[1];
-		Kalaha kalaha = new Kalaha();
-		kalaha.setOwner(player1);
-		
-		
-		assertEquals("Player 1 should have another turn.", player1.getMyTurn(), true);
-		assertEquals("Player 2 should not have the turn", player2.getMyTurn(), false);
-	}
+
+	// Currently Kalaha does not interact with playerturn.
+//	@Test
+//	public void playerTurnIfKalaha() {
+//		final Player player1 = new Player();
+//		final Player player2 = player1.getOpponent();
+//		Kalaha kalaha = new Kalaha();
+//		
+//		assertEquals("Player 1 should have another turn.", player1.getMyTurn(), true);
+//		assertEquals("Player 2 should not have the turn", player2.getMyTurn(), false);
+//	}
 }

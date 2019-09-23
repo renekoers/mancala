@@ -3,9 +3,9 @@ package nl.sogyo.mancala.domain;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
+
 import nl.sogyo.mancala.Bowl;
 import nl.sogyo.mancala.Kalaha;
-import nl.sogyo.mancala.Player;
 
 
 
@@ -14,10 +14,8 @@ public class BowlTest {
 	
 	@Test
 	public void giveBowlNeighbourTest() {
-		Bowl bowl = new Bowl();
-		
-		bowl.giveBowlNeighbour();
-		
+		Bowl bowl = new Bowl(4, 2);
+
 		assertNotNull(bowl);
 		assertTrue("The neighbouring bowl is not a bowl.", bowl.getNeighbour() instanceof Bowl);
 	}
@@ -25,9 +23,7 @@ public class BowlTest {
 	
 	@Test
 	public void giveKalahaNeighbourTest() {
-		Bowl bowl = new Bowl();
-		
-		bowl.giveKalahaNeighbour();
+		Bowl bowl = new Bowl(4, 1);
 		
 		assertNotNull(bowl);
 		assertTrue("The neightbouring bowl is not a kalaha.", bowl.getNeighbour() instanceof Kalaha);
@@ -35,14 +31,25 @@ public class BowlTest {
 
 	
 	@Test
-	public void makeBowlWithOwner() {
-		Bowl bowl = new Bowl();
-		Player[] playerList = Player.makePlayers();
-		Player player1 = playerList[0];
+	public void checkIfBoardGoesRoundTest() {
+		Bowl bowl = new Bowl(4, 6);
 		
-		bowl.setOwner(player1);
+		assertEquals("The first bowl is not the neighbour of the last bowl.", bowl.getNeighbour(14), bowl);
+	}
+	
+	@Test
+	public void makeBowlWithOwner() {
+		Bowl bowl = new Bowl(4, 1);
 		
 		assertNotNull("The bowl has no owner.", bowl.getOwner());
+	}
+	
+	
+	@Test
+	public void getNeighbourTest() {
+		Bowl bowl = new Bowl(4, 2);
+		
+		assertEquals(bowl.getNeighbour(), bowl.getNeighbour(1));
 	}
 	
 	
@@ -60,139 +67,162 @@ public class BowlTest {
 	
 	@Test
 	public void distributeBowlToBowlTest() {
-		Bowl bowl = new Bowl();
-		Player[] playerList = Player.makePlayers();
-		Player player1 = playerList[0];
+		Bowl bowl = new Bowl(4, 2);
 		int beadsInHand = 2;
-		
-		bowl.setOwner(player1);
-		bowl.giveBowlNeighbour();
-		bowl.getNeighbour().giveBowlNeighbour();
-		bowl.distribute(beadsInHand, player1);
+		bowl.distribute(beadsInHand, bowl.getOwner());
 		
 		assertEquals(5, bowl.getBeads());
 		assertEquals(5, bowl.getNeighbour().getBeads());
-		assertEquals(4, bowl.getNeighbour().getNeighbour().getBeads());
+
 	}
 	
 	
 	@Test
 	public void distributeBowlAlongKahalaTest() {
-		Bowl bowl = new Bowl();
-		Player[] playerList = Player.makePlayers();
-		Player player1 = playerList[0];
+		Bowl bowl = new Bowl(4, 1);
 		int beadsInHand = 3;
 		
-		bowl.setOwner(player1);
-		bowl.giveKalahaNeighbour();
-		bowl.getNeighbour().setOwner(player1);
-		bowl.getNeighbour().giveBowlNeighbour();
-		bowl.distribute(beadsInHand, player1);
+		bowl.distribute(beadsInHand, bowl.getOwner());
 		
 		assertEquals(5, bowl.getBeads());
-		assertEquals(1, bowl.getNeighbour().getBeads());
-		assertEquals(5, bowl.getNeighbour().getNeighbour().getBeads());
-		
+		assertEquals(1, bowl.getNeighbour(1).getBeads());
+		assertEquals(5, bowl.getNeighbour(2).getBeads());
 	}
 	
 	
 	@Test
 	public void distributeBowlAlongOpponentKahalaTest() {
-		Bowl bowl = new Bowl();
-		Player[] playerList = Player.makePlayers();
-		Player player1 = playerList[0];
-		Player player2 = playerList[1];
-		int beadsInHand = 2;
-
-		bowl.setOwner(player1);
-		bowl.giveKalahaNeighbour();
-		bowl.getNeighbour().setOwner(player2);
-		bowl.getNeighbour().giveBowlNeighbour();
-		bowl.distribute(beadsInHand, player1);
+		Bowl bowl = new Bowl(4, 1);
+		int beadsInHand = 4;
+		bowl.distribute(beadsInHand, bowl.getOwner());
 		
-		assertEquals(5, bowl.getBeads());
-		assertEquals(0, bowl.getNeighbour().getBeads());
-		assertEquals(5, bowl.getNeighbour().getNeighbour().getBeads());
+		assertEquals(6, bowl.getBeads());
+		assertEquals(1, bowl.getNeighbour(1).getBeads());
+		assertEquals(5, bowl.getNeighbour(2).getBeads());
+		assertEquals(0, bowl.getNeighbour(3).getBeads());
 	}
 	
 	
 	@Test
 	public void startDistributeTest() {
-		Bowl bowl = new Bowl();
-		Player[] playerList = Player.makePlayers();
-		Player player1 = playerList[0];
-		
-		bowl.setOwner(player1);
-		bowl.giveBowlNeighbour();
-		bowl.getNeighbour().giveBowlNeighbour();
-		bowl.getNeighbour().getNeighbour().giveBowlNeighbour();
-		bowl.getNeighbour().getNeighbour().getNeighbour().giveBowlNeighbour();
+		Bowl bowl = new Bowl(4, 6);
 		bowl.startDistribute();
 		
 		assertEquals(0, bowl.getBeads());
-		assertEquals(5, bowl.getNeighbour().getBeads());
-		assertEquals(5, bowl.getNeighbour().getNeighbour().getBeads());
-		assertEquals(5, bowl.getNeighbour().getNeighbour().getNeighbour().getBeads());
-		assertEquals(5, bowl.getNeighbour().getNeighbour().getNeighbour().getNeighbour().getBeads());
+		assertEquals(5, bowl.getNeighbour(1).getBeads());
+		assertEquals(5, bowl.getNeighbour(2).getBeads());
+		assertEquals(5, bowl.getNeighbour(3).getBeads());
+		assertEquals(5, bowl.getNeighbour(4).getBeads());
+		assertEquals(4, bowl.getNeighbour(5).getBeads());
 	}
 	
 	
 	@Test
 	public void findOpponentKalaha() {
-		Bowl bowl = new Bowl();
-		Player[] playerList = Player.makePlayers();
-		Player player1 = playerList[0];
-		Player player2 = playerList[1];
+		Bowl bowl = new Bowl(4, 1);
 		
-		bowl.setOwner(player1);
-		bowl.giveBowlNeighbour();
-		bowl.getNeighbour().setOwner(player1);
-		bowl.getNeighbour().giveKalahaNeighbour();
-		bowl.getNeighbour().getNeighbour().setOwner(player2);
-		
-		assertTrue("The bowl returned is not the enemy kalaha.", bowl.findOpponentKalaha(player1) instanceof Kalaha);
-		assertEquals("The player returned is not the opponent", player1.getOpponent(), bowl.findOpponentKalaha(player1).getOwner());
+		assertTrue("The bowl returned is not the enemy kalaha.", bowl.findOpponentKalaha(bowl.getOwner()) instanceof Kalaha);
+		assertEquals("The player returned is not the opponent", bowl.getOwner().getOpponent(), bowl.findOpponentKalaha(bowl.getOwner()).getOwner());
 	}
 	
 	
 	@Test
 	public void isAllEmptyTest() {
-		Bowl bowl = new Bowl();
-		Player[] playerList = Player.makePlayers();
-		Player player1 = playerList[0];
+		Bowl bowl = new Bowl(0, 6);
 		
-		bowl.emptyBowl();
-		bowl.setOwner(player1);
-		bowl.giveBowlNeighbour();
-		((Bowl) bowl.getNeighbour()).emptyBowl();
-		bowl.getNeighbour().giveBowlNeighbour();
-		((Bowl) bowl.getNeighbour().getNeighbour()).emptyBowl();
-		
-		assertTrue("One of the bowls are not empty, received false.", bowl.isAllEmpty(player1));
-
+		assertTrue("One of the bowls are not empty, received false.", bowl.isAllEmpty(bowl.getOwner()));
 	}
 
 	
 	@Test
+	public void isOneNotEmptyTest() {
+		Bowl bowl = new Bowl(0, 6);
+		
+		bowl.getNeighbour(3).setBeads(3);
+		
+		assertFalse("All the bowls are empty, received true.", bowl.isAllEmpty(bowl.getOwner()));
+	}
+
+	@Test
 	public void wasEmptyTest() {
-		fail("Not yet implemented");
+		Bowl bowl = new Bowl(4, 6);
+		
+		((Bowl) bowl.getNeighbour(4)).emptyBowl();
+		bowl.startDistribute();
+		
+		assertEquals(0, bowl.getBeads());
+		assertEquals(0, ((Bowl) bowl.getNeighbour(4)).getBeads());
+//		assertTrue("The last bowl was not empty.", ((Bowl) bowl.getNeighbour(4)).wasEmpty());
+		
 	}
 	
+	
+	@Test
+	public void wasNotEmptyTest() {
+		Bowl bowl = new Bowl(4, 6);
+		
+		bowl.getNeighbour(4);
+		bowl.startDistribute();
+		
+		assertFalse("The last bowl was empty.", ((Bowl) bowl.getNeighbour(4)).wasEmpty());
+	}
 	
 	@Test
 	public void putBeadsInKalahaTest() {
-		fail("Not yet implemented");
+	Bowl bowl = new Bowl(4, 6);
+			
+		((Bowl) bowl.getNeighbour(4)).emptyBowl();
+		bowl.startDistribute();
+		
+		assertEquals(0, bowl.getBeads());
+		assertEquals(0, bowl.getNeighbour(4).getBeads());
+		assertEquals("Kalaha did not receive the bead.", 5, ((Kalaha) bowl.getNeighbour(6)).getBeads());		
 	}
 	
 	
 	@Test
 	public void findOppositeTest() {
-		fail("Not yet implemented");
+	Bowl bowl = new Bowl(4, 6);
+	Bowl opposite = bowl.findOpposite();
+		assertEquals("Did not find the opposite.", bowl.getNeighbour(12), opposite);
 	}
 	
 	
 	@Test
-	public void getWinner() {
-		fail("Not yet implemented");
+	public void putOpponentBeadsInKalahaTest() {
+	Bowl bowl = new Bowl(4, 6);	
+	
+		((Bowl) bowl.getNeighbour(4)).emptyBowl();
+		bowl.startDistribute();
+		
+		assertEquals("Kalaha did not receive the beads.", 5, ((Kalaha) bowl.getNeighbour(6)).getBeads());
+	}
+	
+	
+	@Test
+	public void getOwnerWinnerTest() {
+		Bowl bowl = new Bowl(4, 6);	
+		
+		bowl.getNeighbour(6).setBeads(4);
+		
+		assertEquals("Player 1 is not the winner while it should be.", bowl.getOwner(), bowl.getWinner());
+	}
+	
+	
+	@Test
+	public void getWinnerOpponentTest() {
+		Bowl bowl = new Bowl(4, 6);	
+
+		bowl.getNeighbour(13).setBeads(4);
+		
+		assertEquals("Player 2 is not the winner while it should be.", bowl.getOwner().getOpponent(), bowl.getWinner());
+	}
+	
+	
+	@Test
+	public void getWinnerTieTest() {
+		Bowl bowl = new Bowl(4, 6);	
+		
+		assertEquals("There should be no winner (null).", null, bowl.getWinner());
 	}
 }

@@ -31,37 +31,58 @@ public abstract class AbstractBowl {
 	public AbstractBowl getNeighbour() {
 		return neighbour;
 	}
-	 
+	
+	
+	public AbstractBowl getNeighbour(int amount) {
+		if (amount > 0) {
+			return neighbour.getNeighbour(amount - 1); 
+		} else {
+			return this;
+		}
+	}
 	 
 	// -- Setters --
 	public void setOwner(Player player) {
 		owner = player;
 	}
-	 
 	
-	public void giveBowlNeighbour() {
-		Bowl bowl = new Bowl();
-		neighbour = bowl;
-	}
-	
-
-	public void giveKalahaNeighbour() {
-		Kalaha kalaha = new Kalaha();
-		neighbour = kalaha;
+	public void setBeads(int beads) {
+		this.beads = beads;
 	}
 	 
 	
-	// AbstractBowl Main Methods
+	// AbstractBowl Abstract Methods
 	protected abstract int takeBead(int beadsInHand);
 	 
 	 
-	public void distribute(int beadsInHand, Player thisTurnsPlayer) {
-		beadsInHand = takeBead(beadsInHand);
-		if (beadsInHand > 0) {
-			neighbour.distribute(beadsInHand, thisTurnsPlayer);
+	public abstract void distribute(int beadsInHand, Player thisTurnsPlayer);
+
+	
+	protected abstract boolean checkBowlsEmpty();
+
+	
+	protected abstract AbstractBowl findOpposite();
+	
+	
+	protected abstract void putBeadsInKalaha(int beads, Player thisTurnsPlayer);
+	
+	
+	// AbstractBowl Methods
+	public boolean isAllEmpty(Player thisTurnsPlayer) {
+		findOpponentKalaha(thisTurnsPlayer);
+		AbstractBowl firstBowl = findOpponentKalaha(thisTurnsPlayer).getNeighbour();
+		return firstBowl.checkBowlsEmpty();
+	}
+	
+	
+	public Kalaha findOwnKalaha(Player thisTurnsPlayer) {
+		if (neighbour instanceof Kalaha && neighbour.getOwner().equals(thisTurnsPlayer)) {
+			return (Kalaha) neighbour;
+		} else {
+			return neighbour.findOwnKalaha(thisTurnsPlayer);
 		}
 	}
-
+	
 	
 	public Kalaha findOpponentKalaha(Player thisTurnsPlayer) {
 		if (neighbour instanceof Kalaha && neighbour.getOwner().equals(thisTurnsPlayer.getOpponent())) {
@@ -70,16 +91,18 @@ public abstract class AbstractBowl {
 			return neighbour.findOpponentKalaha(thisTurnsPlayer);
 		}
 	}
+	 
 	
-
-//	protected abstract boolean isAllEmpty();
-//	 
-//	 
-//	protected abstract void putBeadsInKalaha();
-//	 
-//	 
-//	protected abstract AbstractBowl findOpposite();
-//	 
-//	 
-//	protected abstract Player getWinner();
+	public Player getWinner() {
+		Kalaha ownKalaha = findOwnKalaha(this.owner);
+		Kalaha opponentKalaha = findOpponentKalaha(this.owner);
+		
+		if (ownKalaha.getBeads() > opponentKalaha.getBeads()) {
+			return ownKalaha.getOwner();
+		} else if (opponentKalaha.getBeads() > ownKalaha.getBeads()) {
+			return opponentKalaha.getOwner();
+		} else {
+			return null;
+		}
+	}
 }
