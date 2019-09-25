@@ -4,9 +4,6 @@ package nl.sogyo.mancala.domain;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import nl.sogyo.mancala.Bowl;
-import nl.sogyo.mancala.Kalaha;
-
 
 
 public class BowlTest {
@@ -55,23 +52,19 @@ public class BowlTest {
 	
 	@Test
 	public void takeBeadTest() {
-		Bowl bowl = new Bowl();
-		int beadsInHand = 5;
+		Bowl bowl = new Bowl(4, 2);
+		bowl.play(1);
 		
-		beadsInHand = bowl.takeBead(beadsInHand);
-		
-		assertEquals(4, beadsInHand);
-		assertEquals(5, bowl.getBeads());
+		assertEquals(5, bowl.getNeighbour().getBeads());
 	}
 	
 	
 	@Test
 	public void distributeBowlToBowlTest() {
 		Bowl bowl = new Bowl(4, 2);
-		int beadsInHand = 2;
-		bowl.distribute(beadsInHand, bowl.getOwner());
+		bowl.play(1);
 		
-		assertEquals(5, bowl.getBeads());
+		assertEquals(0, bowl.getBeads());
 		assertEquals(5, bowl.getNeighbour().getBeads());
 
 	}
@@ -79,25 +72,21 @@ public class BowlTest {
 	
 	@Test
 	public void distributeBowlAlongKahalaTest() {
-		Bowl bowl = new Bowl(4, 1);
-		int beadsInHand = 3;
-		
-		bowl.distribute(beadsInHand, bowl.getOwner());
-		
-		assertEquals(5, bowl.getBeads());
+		Bowl bowl = new Bowl(2, 1);
+		bowl.play(1);
+
+		assertEquals(0, bowl.getBeads());
 		assertEquals(1, bowl.getNeighbour(1).getBeads());
-		assertEquals(5, bowl.getNeighbour(2).getBeads());
+		assertEquals(3, bowl.getNeighbour(2).getBeads());
 	}
-	
-	
+
 	@Test
 	public void distributeBowlAlongOpponentKahalaTest() {
 		Bowl bowl = new Bowl(4, 1);
-		int beadsInHand = 4;
-		bowl.distribute(beadsInHand, bowl.getOwner());
-		
-		assertEquals(6, bowl.getBeads());
-		assertEquals(1, bowl.getNeighbour(1).getBeads());
+		bowl.play(1);
+
+		assertEquals(1, bowl.getBeads());
+		assertEquals(2, bowl.getNeighbour(1).getBeads());
 		assertEquals(5, bowl.getNeighbour(2).getBeads());
 		assertEquals(0, bowl.getNeighbour(3).getBeads());
 	}
@@ -106,7 +95,7 @@ public class BowlTest {
 	@Test
 	public void startDistributeTest() {
 		Bowl bowl = new Bowl(4, 6);
-		bowl.startDistribute();
+		bowl.play(1);
 		
 		assertEquals(0, bowl.getBeads());
 		assertEquals(5, bowl.getNeighbour(1).getBeads());
@@ -119,7 +108,9 @@ public class BowlTest {
 	
 	@Test
 	public void findOpponentKalaha() {
-		Bowl bowl = new Bowl(4, 1);
+		Bowl bowl = new Bowl(4, 6);
+		((Bowl) bowl.getNeighbour(4)).emptyBowl();
+		bowl.play(1);
 		
 		assertTrue("The bowl returned is not the enemy kalaha.", bowl.findOpponentKalaha(bowl.getOwner()) instanceof Kalaha);
 		assertEquals("The player returned is not the opponent", bowl.getOwner().getOpponent(), bowl.findOpponentKalaha(bowl.getOwner()).getOwner());
@@ -138,7 +129,7 @@ public class BowlTest {
 	public void isOneNotEmptyTest() {
 		Bowl bowl = new Bowl(0, 6);
 		
-		bowl.getNeighbour(3).setBeads(3);
+		bowl.getNeighbour(3).setBeadsForTest(3);
 		
 		assertFalse("All the bowls are empty, received true.", bowl.isAllEmpty(bowl.getOwner()));
 	}
@@ -148,12 +139,10 @@ public class BowlTest {
 		Bowl bowl = new Bowl(4, 6);
 		
 		((Bowl) bowl.getNeighbour(4)).emptyBowl();
-		bowl.startDistribute();
+		bowl.play(1);
 		
 		assertEquals(0, bowl.getBeads());
 		assertEquals(0, ((Bowl) bowl.getNeighbour(4)).getBeads());
-//		assertTrue("The last bowl was not empty.", ((Bowl) bowl.getNeighbour(4)).wasEmpty());
-		
 	}
 	
 	
@@ -161,8 +150,7 @@ public class BowlTest {
 	public void wasNotEmptyTest() {
 		Bowl bowl = new Bowl(4, 6);
 		
-		bowl.getNeighbour(4);
-		bowl.startDistribute();
+		bowl.play(1);
 		
 		assertFalse("The last bowl was empty.", ((Bowl) bowl.getNeighbour(4)).wasEmpty());
 	}
@@ -172,7 +160,7 @@ public class BowlTest {
 	Bowl bowl = new Bowl(4, 6);
 			
 		((Bowl) bowl.getNeighbour(4)).emptyBowl();
-		bowl.startDistribute();
+		bowl.play(1);
 		
 		assertEquals(0, bowl.getBeads());
 		assertEquals(0, bowl.getNeighbour(4).getBeads());
@@ -193,7 +181,7 @@ public class BowlTest {
 	Bowl bowl = new Bowl(4, 6);	
 	
 		((Bowl) bowl.getNeighbour(4)).emptyBowl();
-		bowl.startDistribute();
+		bowl.play(1);
 		
 		assertEquals("Kalaha did not receive the beads.", 5, ((Kalaha) bowl.getNeighbour(6)).getBeads());
 	}
@@ -203,7 +191,7 @@ public class BowlTest {
 	public void getOwnerWinnerTest() {
 		Bowl bowl = new Bowl(4, 6);	
 		
-		bowl.getNeighbour(6).setBeads(4);
+		bowl.getNeighbour(6).setBeadsForTest(4);
 		
 		assertEquals("Player 1 is not the winner while it should be.", bowl.getOwner(), bowl.getWinner());
 	}
@@ -213,7 +201,7 @@ public class BowlTest {
 	public void getWinnerOpponentTest() {
 		Bowl bowl = new Bowl(4, 6);	
 
-		bowl.getNeighbour(13).setBeads(4);
+		bowl.getNeighbour(13).setBeadsForTest(4);
 		
 		assertEquals("Player 2 is not the winner while it should be.", bowl.getOwner().getOpponent(), bowl.getWinner());
 	}
@@ -224,5 +212,19 @@ public class BowlTest {
 		Bowl bowl = new Bowl(4, 6);	
 		
 		assertEquals("There should be no winner (null).", null, bowl.getWinner());
+	}
+	
+	
+	@Test
+	public void playBowlWithPlayMethodTest() {
+		Bowl bowl = new Bowl(4, 6);
+		
+		bowl.play(4);
+		
+		assertEquals("Bowl 4 has not been played", 0, bowl.getNeighbour(3).getBeads());
+		assertEquals("Kalaha didn't receive a bead into.", 1, bowl.getNeighbour(6).getBeads());
+		assertEquals("Bowl 8 didn't get a bead.", 5, bowl.getNeighbour(7).getBeads());
+		assertEquals("Bowl 9 did get a bead.", 4, bowl.getNeighbour(8).getBeads());
+		assertFalse("Playerturn did not switch at end of the turn.", bowl.getOwner().getMyTurn());
 	}
 }
