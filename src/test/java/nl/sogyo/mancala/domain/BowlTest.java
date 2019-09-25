@@ -220,7 +220,7 @@ public class BowlTest {
 		Bowl bowl = new Bowl(4, 6);
 		
 		bowl.play(4);
-		
+
 		assertEquals("Bowl 4 has not been played", 0, bowl.getNeighbour(3).getBeads());
 		assertEquals("Kalaha didn't receive a bead into.", 1, bowl.getNeighbour(6).getBeads());
 		assertEquals("Bowl 8 didn't get a bead.", 5, bowl.getNeighbour(7).getBeads());
