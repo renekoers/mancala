@@ -16,7 +16,7 @@ public class Player {
 	}
 
 	// Getters
-	public boolean getMyTurn() {
+	public boolean hasTurn() {
 		return myTurn;
 	}
 

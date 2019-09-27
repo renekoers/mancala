@@ -17,7 +17,7 @@ public class KalahaTest {
 	@Test
 	public void distributeBowlAlongKahalaTest() {
 		Bowl bowl = new Bowl(2, 1);
-		bowl.play(1);
+		bowl.play();
 
 		assertEquals(0, bowl.getBeads());
 		assertEquals(1, bowl.getNeighbour(1).getBeads());
@@ -27,7 +27,7 @@ public class KalahaTest {
 	@Test
 	public void distributeBowlAlongOpponentKahalaTest() {
 		Bowl bowl = new Bowl(4, 1);
-		bowl.play(1);
+		bowl.play();
 
 		assertEquals(1, bowl.getBeads());
 		assertEquals(2, bowl.getNeighbour(1).getBeads());
@@ -40,7 +40,7 @@ public class KalahaTest {
 		Bowl bowl = new Bowl(4, 6);
 
 		((Bowl) bowl.getNeighbour(4)).emptyBowl();
-		bowl.play(1);
+		bowl.play();
 
 		assertEquals(0, bowl.getBeads());
 		assertEquals(0, bowl.getNeighbour(4).getBeads());
@@ -52,29 +52,28 @@ public class KalahaTest {
 		Bowl bowl = new Bowl(4, 6);
 
 		((Bowl) bowl.getNeighbour(4)).emptyBowl();
-		bowl.play(1);
+		bowl.play();
 
 		assertEquals("Kalaha did not receive the beads.", 5, ((Kalaha) bowl.getNeighbour(6)).getBeads());
 	}
 
 	@Test
-	public void getOwnerWinnerFromKalahaTest() {
-		Bowl bowl = new Bowl(4, 6);
+	public void getOwnerWinnerTest() {
+		Bowl bowl = new Bowl(4, 2);
 
-		bowl.getNeighbour(6).setBeadsForTest(4);
+		bowl.play();
 
-		assertEquals("Player 1 is not the winner while it should be.", bowl.getOwner(),
-				bowl.getNeighbour(6).getWinner());
+		assertEquals("Player 1 is not the winner while it should be.", bowl.getOwner(), bowl.getWinner());
 	}
 
+
 	@Test
-	public void getWinnerOpponentFromKalahaTest() {
-		Bowl bowl = new Bowl(4, 6);
+	public void getWinnerOpponentTest() {
+		Bowl bowl = new Bowl(2, 3);
+		bowl.play();
+		((Bowl)bowl.getNeighbour(5)).play();
 
-		bowl.getNeighbour(13).setBeadsForTest(4);
-
-		assertEquals("Player 2 is not the winner while it should be.", bowl.getOwner().getOpponent(),
-				bowl.getNeighbour(6).getWinner());
+		assertEquals("Player 2 is not the winner while it should be.", bowl.getOwner().getOpponent(), bowl.getWinner());
 	}
 
 	@Test
@@ -93,9 +92,7 @@ public class KalahaTest {
 
 	@Test
 	public void isOneNotEmptyFromKalahaTest() {
-		Bowl bowl = new Bowl(0, 6);
-
-		bowl.getNeighbour(3).setBeadsForTest(3);
+		Bowl bowl = new Bowl(4, 6);
 
 		assertFalse("All the bowls are empty, received true.", bowl.getNeighbour(6).isAllEmpty(bowl.getOwner()));
 	}

@@ -20,16 +20,16 @@ public class PlayerTest {
 	public void startingPlayerTest() {
 		Bowl bowl = new Bowl(4, 6);
 
-		assertEquals("Player 1 should have the first, starting turn.", bowl.getOwner().getMyTurn(), true);
-		assertEquals("Player 2 should not have the starting turn.", bowl.getOwner().getOpponent().getMyTurn(), false);
+		assertTrue("Player 1 should have the first, starting turn.", bowl.getOwner().hasTurn());
+		assertFalse("Player 2 should not have the starting turn.", bowl.getOwner().getOpponent().hasTurn());
 	}
 
 	@Test
 	public void playerTurnIfBowl() {
 		Bowl bowl = new Bowl(4, 6);
-		bowl.play(1);
+		bowl.play();
 
-		assertEquals("Player 1 should be not have his turn again.", bowl.getOwner().getMyTurn(), false);
-		assertEquals("Player 2 should be now have his turn.", bowl.getOwner().getOpponent().getMyTurn(), true);
+		assertFalse("Player 1 should be not have his turn again.", bowl.getOwner().hasTurn());
+		assertTrue("Player 2 should be now have his turn.", bowl.getOwner().getOpponent().hasTurn());
 	}
 }
