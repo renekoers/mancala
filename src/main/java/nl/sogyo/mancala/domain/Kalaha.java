@@ -1,7 +1,7 @@
 package nl.sogyo.mancala.domain;
 
 public class Kalaha extends AbstractBowl {
-    // jeroen is lief
+    // jeroen gebruikt lightmode
 	// --- Constructor ---
 	protected Kalaha(int beadsInBowls, int amountOfBowls, Player owner, Bowl firstBowl) {
 		super();
