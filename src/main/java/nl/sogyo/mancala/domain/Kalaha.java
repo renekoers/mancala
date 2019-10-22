@@ -1,9 +1,8 @@
 package nl.sogyo.mancala.domain;
 
 public class Kalaha extends AbstractBowl {
-    // jeroen gebruikt lightmode
 	// --- Constructor ---
-	protected Kalaha(int beadsInBowls, int amountOfBowls, Player owner, Bowl firstBowl) {
+	Kalaha(int beadsInBowls, int amountOfBowls, Player owner, Bowl firstBowl) {
 		super();
 		this.beads = 0;
 		this.owner = owner;
@@ -19,7 +18,7 @@ public class Kalaha extends AbstractBowl {
 
 	// --- Kalaha Methods ---
 	protected  int takeBead(int beadsInHand) {
-		if (owner.getMyTurn() == true) {
+		if (owner.getMyTurn()) {
 			beads += 1;
 			beadsInHand -= 1;
 		}
