@@ -1,7 +1,7 @@
 package nl.sogyo.mancala.domain;
 
 public class Kalaha extends AbstractBowl {
-	// --- Constructor --
+	// --- Constructor ---
 	Kalaha(int beadsInBowls, int amountOfBowls, Player owner, Bowl firstBowl) {
 		super();
 		this.beads = 0;
